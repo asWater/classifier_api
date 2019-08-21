@@ -1,0 +1,5 @@
+applications:
+- name: my-ti
+  # tesseract (OCR processing) cannot be worked in the debug mode.
+  #command: node --inspect app.js
+  #command: npm run start
