@@ -4,12 +4,13 @@
 
 <h2>{{ the_title }}</h2>
 
+<br>
 <p>You submitted the following data:</p>
-<table>
-	<tr><td>Phrase:</td><td>{{ the_phrase }}</td></tr>
-</table>
+<label>Sentence: </label>
+<span class="blueKeyword">{{ the_phrase }}</span>
 
-<p>When "{{ the_phrase }}" is classified, the following results are returned:</p>
-<h3>{{ the_results }}</h3>
+<p></p>
+<p>The category of sentence above is: </p>
+<h4 class="blueKeyword">{{ the_results }}</h4>
 
 {% endblock %}

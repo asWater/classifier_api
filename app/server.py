@@ -1,5 +1,5 @@
 # Module import 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
 
 # My own modules
@@ -19,17 +19,27 @@ def entry_page() -> 'html':
 	return render_template('entry.html',
 							the_title='Welcome to My Classifier on the web!')
 
-# Route /viewlog ================================================================
+# Route /predict ================================================================
 @app.route('/predict', methods=['POST'])
 def do_predict() -> 'html':
 	phrase = request.form['phrase']
-	title = 'Here are your results:'
+	title = 'Here is the result.'
 	results = predict( phrase )
 
 	return render_template('results.html',
 						   the_title = title,
 						   the_phrase = phrase,
 						   the_results = results,)
+
+# Route /predict-api ================================================================
+@app.route('/predict-api', methods=['POST'])
+def do_predict_api():
+	phrase = request.form['phrase']
+	result = predict( phrase )
+	return jsonify({
+			'phrase': phrase,
+			'category': result
+		})
 
 # Run the applicaiton ===============================================================
 if __name__ == '__main__':

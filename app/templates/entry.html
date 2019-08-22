@@ -3,17 +3,16 @@
 {% block body %}
 
 <h2>{{ the_title }}</h2>
-
+<br>
 <form method='POST' action='/predict'>
-	<table>
-		<p>Use this form to submit a phrase to be classified:</p>
-		<tr>
-			<td>Phrase:</td>
-			<td><input name='phrase' type='TEXT' placeholder="カテゴリーを判別するテキスト（メールタイトルなど）を入力" width='60'></td>
-		</tr>
-	</table>
-	<p>When you're ready, click this button:</p>
-	<p><input value='Predict Category' type='SUBMIT'></p>
+	<p>Input the sentence that you want to know the category</p>
+	<div class="form-group">
+    	<strong class="blueKeyword">Sentence</strong>
+    	<input name="phrase" class="form-control phraseInput" placeholder="カテゴリーを判別するテキスト（メールタイトルなど）を入力" required>
+  	</div>
+  	<br>
+	<p>After you've inputted the sentence above, click this button</p>
+	<input class="btn btn-primary" value='Predict Category' type='SUBMIT'>
 </form>
 
 {% endblock %}
