@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
 
 # My own modules
-from modules.classifier import predict
+from modules.classifier import predict, train
 
 # 自身の名称を app という名前でインスタンス化する
 app = Flask( __name__ )
@@ -40,6 +40,13 @@ def do_predict_api():
 			'phrase': phrase,
 			'category': result
 		})
+
+# Route /train ================================================================
+@app.route('/train', methods=['GET'])
+def do_train():
+	result = train()
+	return result
+
 
 # Run the applicaiton ===============================================================
 if __name__ == '__main__':

@@ -14,7 +14,7 @@ sys.modules['nlp_tasks'] = nlp_tasks
 
 # Constants
 #CSV_FILE = 'data/text/corpus.csv'
-CSV_FILE = 'data/incident_utf8.csv'
+CSV_FILE = 'app/data/incident_utf8.csv'
 
 class MyMLPClassifier():
 	model = None
@@ -76,6 +76,7 @@ class MyMLPClassifier():
 def train():
 	classifier = MyMLPClassifier()
 	classifier.train( CSV_FILE )
+	return( 'DONE' )
 
 def predict( text ):
 	classifier = MyMLPClassifier()
