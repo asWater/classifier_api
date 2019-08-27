@@ -15,8 +15,30 @@ CountVectorizerというvectorizerを使うと、
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import urllib.request
-import bs4
 from bs4 import BeautifulSoup
+import emoji
+import re
+
+def _normalize_text( text ):
+	# Chanage Alphabet to small letters.
+	text = text.lower()
+
+	# Removing HTML tags
+	text = BeautifulSoup( text, "html.parser" ).get_text()
+
+	# Removing Emoji
+	text = ''.join(c for c in text if c not in emoji.UNICODE_EMOJI)
+
+	# Removing other redundant letters
+	#text = re.sub( r'[!-~]', "", text ) #半角記号,数字,英字
+	text = re.sub( r'[ -/:-@\[-~]', "", text) #半角記号
+	text = re.sub( r'[0-9０-９]', "", text) # 全角/半角 数字
+	text = re.sub( r'[︰-＠]', "", text ) #全角記号
+	text = re.sub( '\n', " ", text ) #改行文字
+
+	return text
+
+
 
 def _preproc_NLP( text ):
 	CONTENT_WORD_POS = ('名詞', '動詞', '形容詞', '副詞')
@@ -33,19 +55,19 @@ def _preproc_NLP( text ):
 			words.append(surface)
 	
 	# Processing for Japanese Stop Words
-	soup = bs4.BeautifulSoup(urllib.request.urlopen(STOPWORDS_URL).read(), "html.parser")
+	soup = BeautifulSoup(urllib.request.urlopen(STOPWORDS_URL).read(), "html.parser")
 	ss = str(soup).splitlines()
 	stopwords = list( filter( lambda a: a != '', ss ) )
 
-	for w in words:
-		if w in stopwords:
-			words.remove(w)
-	
-	return words
+	# listをforループで回してremoveしたら思い通りにならない (https://www.haya-programming.com/entry/2018/06/02/163415)
+	removed_stopwords = [ x for x in words if x not in stopwords ]
+
+	return removed_stopwords
 
 
 def _split_to_words( text ):
 
+	text = _normalize_text( text )
 	selected_words = _preproc_NLP( text )
 
 	'''

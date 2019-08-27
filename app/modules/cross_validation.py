@@ -7,9 +7,12 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold, cross_val_score
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
-import MeCab
+#import MeCab
 import sys
 import time
+from nlp_tasks import _split_to_words as s2w
+#from modules import nlp_tasks._split_to_words as s2w
+
 
 CROSS_VALIDATTION_N = 4
 #CSV_FILE = 'data/text/corpus.csv'
@@ -31,6 +34,7 @@ EXCLUDED_ESTIMATORS = [
 
 warnings.filterwarnings( 'ignore' )
 
+'''
 wakati = MeCab.Tagger( '-O wakati' )
 
 def tokenize( text ):
@@ -38,6 +42,7 @@ def tokenize( text ):
 	parsed_text = wakati.parse( text )
 	word_list = parsed_text.split( ' ' )
 	return word_list
+'''
 
 def get_textdata_and_labels( _data ):
 	"""
@@ -56,7 +61,8 @@ def get_textdata_and_labels( _data ):
 	df.fillna( ' ', inplace=True )
 
 	# テキストのBoW生成
-	count_vect = CountVectorizer( analyzer=tokenize, max_df=0.5, max_features=1000 )
+	#count_vect = CountVectorizer( analyzer=s2w, max_df=0.5, max_features=1000 )
+	count_vect = TfidfVectorizer( analyzer=s2w, max_features=1000 )
 	
 	#bow = count_vect.fit_transform( df['text'].tolist() )
 
@@ -96,6 +102,7 @@ def main():
 		#if name == 'ClassifierChain': continue
 		#if re.match( '^[A-S]|[a-h]', name ): continue
 		if name in EXCLUDED_ESTIMATORS: continue
+		if name != 'MLPClassifier': continue
 
 		model = Estimater()
 
