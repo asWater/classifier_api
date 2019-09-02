@@ -31,9 +31,10 @@ def _normalize_text( text ):
 
 	# Removing other redundant letters
 	#text = re.sub( r'[!-~]', "", text ) #半角記号,数字,英字
-	text = re.sub( r'[ -/:-@\[-~]', "", text) #半角記号
+	#text = re.sub( r'[ -/:-@\[-~]', "", text) #半角記号 -> 小文字アルファベットも消されてしまう。
+	text = re.sub( r'[!-/:-@[-`{-~]', "", text) #半角記号 (半角空白を除く)
 	text = re.sub( r'[0-9０-９]', "", text) # 全角/半角 数字
-	text = re.sub( r'[︰-＠]', "", text ) #全角記号
+	text = re.sub( r'[︰-＠]', "", text ) #全角記号。 こっちにしたほうがいいかも？ -> [！-／：-＠［-｀｛-～、-〜”’・]
 	text = re.sub( '\n', " ", text ) #改行文字
 
 	return text
