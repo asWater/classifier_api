@@ -1,7 +1,7 @@
 beautifulsoup4==4.8.0
 emoji==0.5.3
 Flask==1.1.1
-joblib==0.13.2
+joblib==1.1.1
 mecab-python3==0.996.2
 numpy==1.17.0
 pandas==0.25.0
