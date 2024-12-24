@@ -27,7 +27,8 @@ def _normalize_text( text ):
 	text = BeautifulSoup( text, "html.parser" ).get_text()
 
 	# Removing Emoji
-	text = ''.join(c for c in text if c not in emoji.UNICODE_EMOJI)
+	#text = ''.join(c for c in text if c not in emoji.UNICODE_EMOJI)
+	text = ''.join(c for c in text if c not in emoji.EMOJI_DATA)
 
 	# Removing other redundant letters
 	#text = re.sub( r'[!-~]', "", text ) #半角記号,数字,英字
@@ -49,15 +50,33 @@ def _preproc_NLP( text ):
 	tagger = MeCab.Tagger()
 	words = []
 	
+	'''
+	!!! Following process issues "ValueError: too many values to unpack (expected 2)", so replaced to "parseToNode" !!!
+
 	for line in tagger.parse( text ).splitlines()[:-1]:
+		# !!! > The following statement issues the error "ValueError: too many values to unpack (expected 2)"
 		surface, feature = line.split('\t')
 		
 		if feature.startswith(CONTENT_WORD_POS) and ',非自立,' not in feature:
 			words.append(surface)
+
+	'''
+	# Replaced processing (changed to "parseToNode" from "parse")
+	node = tagger.parseToNode( text )
+	while node:
+		if node.feature.startswith(CONTENT_WORD_POS) \
+		   and '非自立' not in node.feature:
+			words.append(node.surface)
+		node = node.next
+	
 	
 	# Processing for Japanese Stop Words
-	soup = BeautifulSoup(urllib.request.urlopen(STOPWORDS_URL).read(), "html.parser")
-	ss = str(soup).splitlines()
+	# !!! Replaced due to the error "http.client.RemoteDisconnected: Remote end closed connection without response"
+
+	#soup = BeautifulSoup(urllib.request.urlopen(STOPWORDS_URL).read(), "html.parser")
+	#ss = str(soup).splitlines()
+	f = open('app/modules/Japanese.txt', 'r', encoding='utf-8')
+	ss = str(f.read()).splitlines()
 	stopwords = list( filter( lambda a: a != '', ss ) )
 
 	# listをforループで回してremoveしたら思い通りにならない (https://www.haya-programming.com/entry/2018/06/02/163415)
@@ -85,6 +104,7 @@ def _split_to_words( text ):
 def get_vector_by_text_list( _items ):
 	count_vect = TfidfVectorizer( analyzer=_split_to_words )
 	bow = count_vect.fit_transform( _items )
-	X = bow.todense()
+	#!!! Changed to "toarray" from "todense" due t othe error "TypeError: np.matrix is not supported. Please convert to a numpy array with np.asarray"
+	X = bow.toarray()
 
 	return [X, count_vect]

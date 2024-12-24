@@ -90,7 +90,8 @@ def get_textdata_and_labels():
 	bow = vect.fit_transform( titleText )
 	
 	# numpy.matrixに変換する時はtodense()を使います
-	X = bow.todense()
+	#!!! Changed to "toarray" from "todense" due t othe error "TypeError: np.matrix is not supported. Please convert to a numpy array with np.asarray"
+	X = bow.toarray()
 
 	# ラベルデータをベクトルに変換
 	le = LabelEncoder()
